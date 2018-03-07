@@ -1,5 +1,5 @@
 const {assert} = require('chai');
-const {buildVideoObject} = require('../test-utils');
+const {buildVideoObject, parseTextFromHTML} = require('../test-utils');
 const Video = require('../../models/video');
 const request = require('supertest');
 const app = require('../../app');
@@ -46,4 +46,13 @@ describe('Field validations', () => {
     const videos = await Video.find({});
     assert.equal(videos.length, 0);
   });
+
+  it('shows an error if title missing', async () => {
+    const response = await request(app)
+      .post('/videos')
+      .type('form')
+      .send({title: '', description:'just a descrpiption'});
+    const videos = await Video.find({});
+    assert.include(parseTextFromHTML(response.text, 'body'), 'title is required');
+  })
 })

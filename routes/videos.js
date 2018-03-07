@@ -13,13 +13,14 @@ router.get('/create', async (req, res, next) => {
 
 router.post('/videos', async (req, res) => {
   const {title, description} = req.body;
-  if (title) {
-    const newVideo = new Video({title, description});
+  const newVideo = new Video({title, description});
+  if (newVideo.title) {   
     await newVideo.save();
     res.status(201);
     res.render('show', {newVideo})  
   } else {
     res.status(400);
-    res.render('')  
+    const error = 'title is required'
+    res.render('create', {error, newVideo})  
   }
 })

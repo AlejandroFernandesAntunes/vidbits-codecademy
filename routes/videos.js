@@ -13,8 +13,13 @@ router.get('/create', async (req, res, next) => {
 
 router.post('/videos', async (req, res) => {
   const {title, description} = req.body;
-  const newVideo = new Video({title, description});
-  await newVideo.save();
-  res.status(201);
-  res.render('show', {newVideo})
+  if (title) {
+    const newVideo = new Video({title, description});
+    await newVideo.save();
+    res.status(201);
+    res.render('show', {newVideo})  
+  } else {
+    res.status(400);
+    res.render('')  
+  }
 })

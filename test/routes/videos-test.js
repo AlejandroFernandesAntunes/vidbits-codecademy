@@ -32,3 +32,18 @@ describe('Saves the video in the db', () => {
     assert.equal(videoToCreate.description, createdVideo.description);
   });
 });
+
+describe('Field validations', () => {
+  beforeEach(connectDatabase);
+
+  afterEach(disconnectDatabase);
+
+  it('missing title', async () => {
+    const response = await request(app)
+      .post('/videos')
+      .type('form')
+      .send({title: '', description:'just a descrpiption'});
+    const videos = await Video.find({});
+    assert.equal(videos.length, 0);
+  });
+})

@@ -8,6 +8,7 @@ describe('User visits the create page', () => {
       browser.url('/create');
       browser.setValue('#title-input', videoToCreate.title);
       browser.setValue('#description-input', videoToCreate.description);
+      browser.setValue('#url-input', videoToCreate.url);
       browser.click('#submit-video');
       assert.include(browser.getText('body'), videoToCreate.title);
     });

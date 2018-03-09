@@ -19,14 +19,20 @@ router.get('/videos/:id', async (req, res) => {
 })
 
 router.post('/videos', async (req, res) => {
-  const {title, description} = req.body;
-  const video = new Video({title, description});
-  if (video.title) {   
-    await video.save();
-    res.redirect(302, `/videos/${video._id}`)  
-  } else {
+  const {title, description, url} = req.body;
+  const video = new Video({title, description, url});
+  video.validateSync();
+  if (video.errors) {
     res.status(400);
-    const error = 'title is required'
-    res.render('create', {error, video})  
+    var error = 'Undefined problem'
+    if (video.errors['title']) {
+      error = video.errors['title'].message 
+    } else if (video.errors['url']){
+      error = video.errors['url'].message 
+    }
+    res.render('create', {error, video})
+  } else {
+    await video.save();
+    res.redirect(302, `/videos/${video._id}`)
   }
 })

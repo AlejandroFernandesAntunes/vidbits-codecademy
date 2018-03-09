@@ -24,7 +24,13 @@ describe('Video attributes', () => {
 
   it('has a description which is a String', ()=>{
     const descriptionAsAString = 2;
-    const video = new Video({title: descriptionAsAString});
-    assert.strictEqual(video.title, descriptionAsAString.toString());
+    const video = new Video({title: 'title', description: descriptionAsAString});
+    assert.strictEqual(video.description, descriptionAsAString.toString());
+  })
+
+  it('has a url which is a String', ()=>{
+    const url = 2;
+    const video = new Video({title: 'with url', url: url});
+    assert.strictEqual(video.url, url.toString());
   })
 })

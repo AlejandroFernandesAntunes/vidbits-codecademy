@@ -6,7 +6,8 @@ const Video = require('../models/video');
 const buildVideoObject = (options = {}) => {
   const title = options.title || 'A cool video';
   const description = options.description || 'Of Elvis singin polka';
-  return {title, description};
+  const url = options.url || generateRandomUrl();
+  return {title, description, url};
 };
 
 // Add a sample Video object to mongodb
@@ -25,8 +26,14 @@ const parseTextFromHTML = (htmlAsString, selector) => {
   }
 };
 
+const generateRandomUrl = () => {
+  return `http://example/${Math.random()}`;
+};
+
+
 module.exports = {
   buildVideoObject,
   seedVideoToDatabase,
   parseTextFromHTML,
+  generateRandomUrl
 };

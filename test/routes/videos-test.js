@@ -24,8 +24,9 @@ describe('Saves the video in the db', () => {
       .type('form')
       .send(videoToCreate);
     const createdVideo = await Video.findOne(videoToCreate);
-    assert.equal(videoToCreate.title, createdVideo.title);
-    assert.equal(videoToCreate.description, createdVideo.description);
+    assert.include(createdVideo, {title: videoToCreate.title});
+    assert.include(createdVideo, {description: videoToCreate.description});
+    assert.include(createdVideo, {url: videoToCreate.url});
   });
 });
 
@@ -50,6 +51,25 @@ describe('Field validations', () => {
       .send({title: '', description:'just a descrpiption'});
     const videos = await Video.find({});
     assert.include(parseTextFromHTML(response.text, 'body'), 'title is required');
+  })
+
+  it('shows an error if title missing, keeping values in other fields', async () => {
+    const response = await request(app)
+      .post('/videos')
+      .type('form')
+      .send({title: '', description:'just a descrpiption', url: 'http://example.com'});
+    const videos = await Video.find({});
+    assert.include(parseTextFromHTML(response.text, 'body'), 'title is required');
+    assert.include(parseTextFromHTML(response.text, 'body'), 'just a descrpiption');
+  })
+
+  it('shows an error if url missing', async () => {
+    const response = await request(app)
+      .post('/videos')
+      .type('form')
+      .send({title: 'my title', description:'just a descrpiption', url: ''});
+    const videos = await Video.find({});
+    assert.include(parseTextFromHTML(response.text, 'body'), 'a URL is required')
   })
 })
 

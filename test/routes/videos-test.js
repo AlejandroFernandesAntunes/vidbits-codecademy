@@ -115,4 +115,15 @@ describe('POST /videos/:id/edit', () => {
     const updatedVideo = await Video.find({title: 'Recently updated video'});
     assert.equal(updatedVideo.length, 1);
   })
+
+  it('redirects to show', async () => {
+    const video = await seedVideoToDatabase();
+    const response = await request(app)
+      .post(`/updates`)
+      .type('form')
+      .send({_id: video.id, title: 'Recently updated video', description:'just a descrpiption', url: 'foo'});
+
+    assert.equal(response.status, 302);
+    assert.equal(response.headers.location, `/videos/${video._id}`);
+  })
 });

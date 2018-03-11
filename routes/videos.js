@@ -25,15 +25,15 @@ router.get('/videos/:id/edit', async (req, res) => {
   res.render('edit', {video})
 })
 
-router.post('/updates', async (req, res) => {
+router.post('/updates', async (req, res, next) => {
   const id = req.body._id
   const { title, description, url  } = req.body;
   Video.findOneAndUpdate({_id: id}, {$set:{title, description, url}}, {new: true}, function(err, video){
     if(err){
       console.log("Something wrong when updating video");
     }
-    res.render('show', {video})
-});
+    res.redirect(302, `/videos/${video._id}`)
+  });
 })
 
 router.post('/videos', async (req, res) => {

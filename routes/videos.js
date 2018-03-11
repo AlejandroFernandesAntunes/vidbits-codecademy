@@ -18,6 +18,24 @@ router.get('/videos/:id', async (req, res) => {
   res.render('show', {video})
 })
 
+router.get('/videos/:id/edit', async (req, res) => {
+  const id = req.params.id
+  const video =  await Video.findOne({_id: id});
+
+  res.render('edit', {video})
+})
+
+router.post('/updates', async (req, res) => {
+  const id = req.body._id
+  const { title, description, url  } = req.body;
+  Video.findOneAndUpdate({_id: id}, {$set:{title, description, url}}, {new: true}, function(err, video){
+    if(err){
+      console.log("Something wrong when updating video");
+    }
+    res.render('show', {video})
+});
+})
+
 router.post('/videos', async (req, res) => {
   const {title, description, url} = req.body;
   const video = new Video({title, description, url});

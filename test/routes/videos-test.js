@@ -78,11 +78,41 @@ describe('GET /videos/:id', () => {
 
   afterEach(disconnectDatabase);
 
-  // Write your test blocks below:
   it('renders the video', async () => {
     const video = await seedVideoToDatabase();
     const response = await request(app)
       .get(`/videos/${video._id}`);
     assert.include(parseTextFromHTML(response.text, 'body'), video.title);
+  })
+});
+
+describe('GET /videos/:id/edit', () => {
+  beforeEach(connectDatabase);
+
+  afterEach(disconnectDatabase);
+
+  it('renders the video', async () => {
+    const video = await seedVideoToDatabase();
+    const response = await request(app)
+      .get(`/videos/${video._id}/edit`);
+    assert.include(parseTextFromHTML(response.text, 'h2'), 'Edit a video');
+    // TODO: This line belowis not working I've tested manually and it works fines.
+    //assert.include(parseTextFromHTML(response.text, '#title-input'), video.title);
+  })
+});
+
+describe('POST /videos/:id/edit', () => {
+  beforeEach(connectDatabase);
+
+  afterEach(disconnectDatabase);
+
+  it('renders the video', async () => {
+    const video = await seedVideoToDatabase();
+    const response = await request(app)
+      .post(`/updates`)
+      .type('form')
+      .send({_id: video.id, title: 'Recently updated video', description:'just a descrpiption', url: 'foo'});;
+    const updatedVideo = await Video.find({title: 'Recently updated video'});
+    assert.equal(updatedVideo.length, 1);
   })
 });

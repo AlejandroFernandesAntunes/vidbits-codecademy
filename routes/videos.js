@@ -66,3 +66,16 @@ router.post('/videos', async (req, res) => {
     res.redirect(302, `/videos/${video._id}`)
   }
 })
+
+router.post('/videos/:id/deletions', async (req, res) => {
+  const id = req.body._id
+  const video = await Video.findOne({_id: id});
+  video.remove(function(err) {
+    if (err) {
+      res.render('edit', {err, video});
+    }
+    else {
+      res.redirect('/');
+    }
+  });
+})

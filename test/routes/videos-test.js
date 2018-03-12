@@ -126,4 +126,22 @@ describe('POST /videos/:id/edit', () => {
     assert.equal(response.status, 302);
     assert.equal(response.headers.location, `/videos/${video._id}`);
   })
+
+  it('validates the video', async () => {
+    const video = await seedVideoToDatabase();
+    const response = await request(app)
+      .post(`/updates`)
+      .type('form')
+      .send({_id: video.id, title: '', description:'just a descrpiption', url: 'foo'});;
+    assert.include(parseTextFromHTML(response.text, 'body'), 'title is required');
+  })
+
+  it('returns 400 on invalid', async () => {
+    const video = await seedVideoToDatabase();
+    const response = await request(app)
+      .post(`/updates`)
+      .type('form')
+      .send({_id: video.id, title: '', description:'just a descrpiption', url: 'foo'});;
+      assert.equal(response.status, 400);
+  })
 });

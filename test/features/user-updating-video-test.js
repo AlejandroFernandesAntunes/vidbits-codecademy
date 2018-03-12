@@ -19,7 +19,7 @@ describe('User visits the edit page', () => {
       browser.setValue('#url-input', 'editedurl.com');
       browser.click('#edit-video');
       // TODO: Getting a time out because of iframe rendering
-      //assert.include(browser.getText('body'), 'edited Title');
+      assert.include(browser.getText('body'), 'edited Title');
     });
 
     xit('does not create an aditional video', () => {
@@ -40,8 +40,8 @@ describe('User visits the edit page', () => {
 
       // It does not render old video
       // TODO: Getting a time out because of iframe rendering, tested manually and it works
-      //assert.notInclude(browser.getText('body'), videoToCreate.title);
-      //assert.include(browser.getText('body'), 'edited Title');
+      assert.notInclude(browser.getText('body'), videoToCreate.title);
+      assert.include(browser.getText('body'), 'edited Title');
     });
   });
 });

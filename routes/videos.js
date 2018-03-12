@@ -28,12 +28,24 @@ router.get('/videos/:id/edit', async (req, res) => {
 router.post('/updates', async (req, res, next) => {
   const id = req.body._id
   const { title, description, url  } = req.body;
-  Video.findOneAndUpdate({_id: id}, {$set:{title, description, url}}, {new: true}, function(err, video){
-    if(err){
-      console.log("Something wrong when updating video");
+  const video =  await Video.findOne({_id: id});
+  video.title = title;
+  video.description = description;
+  video.url = url;
+  video.validateSync();
+  if (video.errors) {
+    res.status(400);
+    var error = 'Undefined problem'
+    if (video.errors['title']) {
+      error = video.errors['title'].message 
+    } else if (video.errors['url']){
+      error = video.errors['url'].message 
     }
+    res.render('edit', {error, video})
+  } else {
+    await video.save();
     res.redirect(302, `/videos/${video._id}`)
-  });
+  }
 })
 
 router.post('/videos', async (req, res) => {
